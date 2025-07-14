@@ -138,6 +138,30 @@ export function start(done: (err?: any, server?: express.Express, storage?: Stor
         app.use(api.acquisition({ storage: storage, redisManager: redisManager }));
       }
 
+      // if (process.env.DISABLE_MANAGEMENT !== "true") {
+      //   if (process.env.DEBUG_DISABLE_AUTH === "true") {
+      //     app.use((req, res, next) => {
+      //       let userId: string = "default";
+      //       if (process.env.DEBUG_USER_ID) {
+      //         userId = process.env.DEBUG_USER_ID;
+      //       } else {
+      //         console.log("No DEBUG_USER_ID environment variable configured. Using 'default' as user id");
+      //       }
+
+      //       req.user = {
+      //         id: userId,
+      //       };
+
+      //       next();
+      //     });
+      //   } else {
+      //     app.use(auth.router());
+      //   }
+      //   app.use(auth.authenticate, fileUploadMiddleware, api.management({ storage: storage, redisManager: redisManager }));
+      // } else {
+      //   app.use(auth.legacyRouter());
+      // }
+
       if (process.env.DISABLE_MANAGEMENT !== "true") {
         if (process.env.DEBUG_DISABLE_AUTH === "true") {
           app.use((req, res, next) => {
@@ -154,10 +178,13 @@ export function start(done: (err?: any, server?: express.Express, storage?: Stor
 
             next();
           });
+
+          // Пропускаємо auth.authenticate, відразу запускаємо api.management
+          app.use(fileUploadMiddleware, api.management({ storage: storage, redisManager: redisManager }));
         } else {
           app.use(auth.router());
+          app.use(auth.authenticate, fileUploadMiddleware, api.management({ storage: storage, redisManager: redisManager }));
         }
-        app.use(auth.authenticate, fileUploadMiddleware, api.management({ storage: storage, redisManager: redisManager }));
       } else {
         app.use(auth.legacyRouter());
       }

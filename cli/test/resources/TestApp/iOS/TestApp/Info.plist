@@ -45,5 +45,7 @@
 	<string></string>
 	<key>CodePushDeploymentKey</key>
 	<string>deployment-key-here</string>
+	<key>CodePushServerURL</key>
+	<string>http://localhost:3000</string>
 </dict>
 </plist>

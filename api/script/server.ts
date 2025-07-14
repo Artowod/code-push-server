@@ -6,7 +6,6 @@ import * as defaultServer from "./default-server";
 
 const https = require("https");
 const fs = require("fs");
-
 defaultServer.start(function (err: Error, app: express.Express) {
   if (err) {
     throw err;
@@ -17,6 +16,10 @@ defaultServer.start(function (err: Error, app: express.Express) {
 
   const port: number = Number(process.env.API_PORT) || Number(process.env.PORT) || defaultPort;
   let server: any;
+
+  console.log("DEBUG_DISABLE_AUTH:", process.env.DEBUG_DISABLE_AUTH);
+  console.log("EMULATED:", process.env.EMULATED);
+  console.log("AZURE_STORAGE_ACCOUNT:", process.env.AZURE_STORAGE_ACCOUNT);
 
   if (httpsEnabled) {
     const options = {
